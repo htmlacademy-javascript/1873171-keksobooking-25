@@ -8,7 +8,7 @@ const getRandomNumber = (minNumber, maxNumber) => {
     return Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber;
   }
 
-  return 'Invalid';
+  return Error;
 };
 
 getRandomNumber( 20, 70);
@@ -18,11 +18,11 @@ getRandomNumber( 20, 70);
 
 const getRandomFractionalNumber = (minNumber, maxNumber, digits) => {
 
-  if ( minNumber >= 0 && maxNumber > minNumber) {
+  if ( minNumber >= 0 && maxNumber > minNumber && digits >= 1) {
     return (Math.random() * (maxNumber - minNumber + 1) + minNumber).toFixed(digits);
   }
 
-  return 'Invalid';
+  return Error;
 };
 
 getRandomFractionalNumber( 2.3, 10.4, 1);
