@@ -8,7 +8,7 @@ const getRandomNumber = (minNumber, maxNumber) => {
     return Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber;
   }
 
-  return Error;
+  throw new Error('Ошибка');
 };
 
 getRandomNumber( 20, 70);
@@ -22,7 +22,7 @@ const getRandomFractionalNumber = (minNumber, maxNumber, digits) => {
     return (Math.random() * (maxNumber - minNumber + 1) + minNumber).toFixed(digits);
   }
 
-  return Error;
+  throw new Error('Ошибка');
 };
 
 getRandomFractionalNumber( 2.3, 10.4, 1);
