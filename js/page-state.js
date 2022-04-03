@@ -1,2 +1,2 @@
-import './form-action.js';
+import './form.js';
 import './map.js';

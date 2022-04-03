@@ -39,4 +39,21 @@ const getValue = (elements, elementsCheck) => {
   return value;
 };
 
-export {getRandomNumber, getRandomFractionalNumber, getRandomArrayElement, getValue};
+// Возвращает массив случайной длины, значения не повторяются.
+
+const getRandomArray = (element) => {
+  let value;
+  const lengthArray = getRandomNumber(0, element.length - 1);
+  const arrayEmptyCheck = Array.from({length: 0});
+  const RECEIVED_ELEMENTS = Array.from({length: 0});
+
+  if (lengthArray !== 0) {
+    for (let i = 0; i <= lengthArray; i++) {
+      value = getValue(element, arrayEmptyCheck);
+      RECEIVED_ELEMENTS.push(value);
+    }
+  }
+  return RECEIVED_ELEMENTS;
+};
+
+export {getRandomNumber, getRandomFractionalNumber, getRandomArrayElement, getValue, getRandomArray};

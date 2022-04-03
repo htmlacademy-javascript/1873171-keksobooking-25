@@ -1,1 +1,1 @@
-import './ads-action.js';
+import './popup.js';
