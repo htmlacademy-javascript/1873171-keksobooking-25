@@ -40,8 +40,8 @@ similarAds.forEach(({offer, author}) => {
   adElement.querySelector('.popup__features').innerHTML = '';
   adElement.querySelector('.popup__features').append(featureListFragment);
 
-  const ccontainer = adElement.querySelector('.popup__photos');
-  ccontainer.innerHTML = '';
+  const photoscontainer = adElement.querySelector('.popup__photos');
+  photoscontainer.innerHTML = '';
 
   offer.photos.forEach((value) => {
     const photoListItem = document.createElement('img');
@@ -52,7 +52,7 @@ similarAds.forEach(({offer, author}) => {
     photoListItem.style.width = '45px';
     photoListItem.style.height = '40px';
 
-    ccontainer.append(photoListItem);
+    photoscontainer.append(photoListItem);
   });
 
   similarListFragment.appendChild(adElement);
