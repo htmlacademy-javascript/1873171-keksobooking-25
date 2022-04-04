@@ -1,4 +1,4 @@
-import {getRandomNumber, getRandomArrayElement, getRandomFractionalNumber, getValue} from './util.js';
+import {getRandomNumber, getRandomArrayElement, getRandomFractionalNumber, getValue, getRandomArray} from './util.js';
 
 const TYPE_OF_HOUSING = [
   'palace',
@@ -37,11 +37,10 @@ const PHOTOS = [
 
 const ROOMS_QUANTITY = [1, 2, 3, 100];
 
-const GUESTS_QUANTITY = [1, 2, 3];
+const GUESTS_QUANTITY = [1, 2, 3, 'не для гостей'];
 
 const ARRAY_NUMBERS = Array.from({length: 10}, (v, i) => ++i);
 const ARRAY_EMPTY = Array.from({length: 0});
-const ARRAY_EMPTY_STRING = Array.from({length: 0});
 
 const LATITUDE_MIN = 35.65000;
 const LATITUDE_MAX = 35.70000;
@@ -50,16 +49,9 @@ const LONGTUBE_MAX = 139.80000;
 
 const PRICE_MAX = 100000;
 
-const CREATE_ADS_COUNT = 10;
-
 const getNumber = () => {
   const value = getValue(ARRAY_NUMBERS, ARRAY_EMPTY);
   return (value < 10) ? `0${value}` : `${value}`;
-};
-
-const getString = () => {
-  const value = getValue(FEATURES, ARRAY_EMPTY_STRING);
-  return `${value}`;
 };
 
 // Создает объявление
@@ -79,9 +71,9 @@ const createAd = function () {
       guests: getRandomArrayElement(GUESTS_QUANTITY),
       checkin: getRandomArrayElement(CHECKIN_TIME),
       checkout: getRandomArrayElement(CHECKOUT_TIME),
-      features: getString(),
+      features: getRandomArray(FEATURES),
       description: 'В распоряжении гостей апартаменты со стиральной машиной, телевизором с плоским экраном, гостиным уголком, полностью оборудованной кухней с микроволновой печью, холодильником, плитой и чайником.',
-      photos: getRandomArrayElement(PHOTOS),
+      photos: getRandomArray(PHOTOS),
     },
     location: {
       lat: latitude,
@@ -92,6 +84,6 @@ const createAd = function () {
 
 // Создает массив с обьявлениями
 
-const createAds = () => Array.from({length: CREATE_ADS_COUNT}, createAd);
+const createAds = (count) => Array.from({length: count}, createAd);
 
 export {createAds};
