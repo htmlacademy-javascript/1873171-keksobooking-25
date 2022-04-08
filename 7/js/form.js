@@ -39,11 +39,14 @@ const maxCapacity = {
 
 const checkCapacity = () => maxCapacity[numberRooms.value].includes(numberGuests.value);
 
-const getCapacitykErrorMessage = () =>`Выбор ${numberRooms.value} ${numberRooms.value === '1' ? 'комнаты' : 'комнат'} для ${numberGuests.value.toLowerCase()} ${numberGuests.value === '1' ? 'гостя' : 'гостей'} невозможен.`;
-const getGuestsErrorMessage = () =>`Для ${numberGuests.value.toLowerCase()} ${numberGuests.value === '1' ? 'гостя' : 'гостей'} выбор ${numberRooms.value} ${numberRooms.value === '1' ? 'комнаты' : 'комнат'}  невозможен.`;
+numberRooms.addEventListener('input', () => {
+  checkCapacity();
+  pristine.validate(numberGuests);
+});
 
-pristine.addValidator(numberRooms, checkCapacity, getCapacitykErrorMessage);
-pristine.addValidator(numberGuests, checkCapacity,  getGuestsErrorMessage);
+const getGuestsErrorMessage = () =>`Выбор ${numberRooms.value} ${numberRooms.value === '1' ? 'комнаты' : 'комнат'} для ${numberGuests.value.toLowerCase()} ${numberGuests.value === '1' ? 'гостя' : 'гостей'} невозможен.`;
+
+pristine.addValidator(numberGuests, checkCapacity, getGuestsErrorMessage);
 
 // Валидация поля «Цена за ночь»
 
@@ -96,6 +99,10 @@ pristine.addValidator(price, validatePrice, getPriceErrorMessage);
 // });
 
 adForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
+  if (!pristine.validate()) {evt.preventDefault();}
 });
+
+// adForm.addEventListener('submit', (evt) => {
+//   evt.preventDefault();
+//   pristine.validate();
+// });
