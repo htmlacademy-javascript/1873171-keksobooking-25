@@ -1,37 +1,106 @@
-import './field.js';
+import './form-state.js';
 
-const switchToInactiveState = () => {
-  document.querySelector('.ad-form').classList.add('ad-form--disabled');
-  document.querySelector('.ad-form-header').setAttribute('disabled', true);
+const adForm = document.querySelector('.ad-form');
 
-  document.querySelectorAll('.ad-form__element').forEach((value) => {
-    value.setAttribute('disabled', true);
-  });
+const pristine = new Pristine(adForm, {
+  classTo: 'ad-form__element',
+  errorClass: 'ad-form__element--invalid',
+  successClass: 'ad-form__element--valid',
+  errorTextParent: 'ad-form__element',
+  errorTextTag: 'span',
+  errorTextClass: 'ad-form__element--error'
+});
 
-  document.querySelector('.map__filters').classList.add('map__filters--disabled');
-  document.querySelector('.map__features').setAttribute('disabled', true);
+// Валидация поля "Заголовок объявления"
 
-  document.querySelectorAll('.map__filter').forEach((value) => {
-    value.setAttribute('disabled', true);
-  });
+const title = adForm.querySelector('#title');
+
+const checkTitle = (value) => value.length >= 30 && value.length <= 100;
+
+const getTitleErrorMessage = (value) => {
+  if (value.length <= 30) {
+    return `Минимальное количество символов 30. Длина поля сейчас ${value.length}.`;
+  }
 };
 
-switchToInactiveState();
+pristine.addValidator(title, checkTitle, getTitleErrorMessage);
 
-const switchToActiveState = () => {
-  document.querySelector('.ad-form').classList.remove('ad-form--disabled');
-  document.querySelector('.ad-form-header').removeAttribute('disabled', true);
+// Валидация поля «Количество комнат» и поля «Количество мест»
 
-  document.querySelectorAll('.ad-form__element').forEach((value) => {
-    value.removeAttribute('disabled', true);
-  });
+const numberRooms = adForm.querySelector('#room_number');
+const numberGuests = adForm.querySelector('#capacity');
 
-  document.querySelector('.map__filters').classList.remove('map__filters--disabled');
-  document.querySelector('.map__features').removeAttribute('disabled', true);
-
-  document.querySelectorAll('.map__filter').forEach((value) => {
-    value.removeAttribute('disabled', true);
-  });
+const maxCapacity = {
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0']
 };
 
-switchToActiveState();
+const checkCapacity = () => maxCapacity[numberRooms.value].includes(numberGuests.value);
+
+numberRooms.addEventListener('input', () => {
+  checkCapacity();
+  pristine.validate(numberGuests);
+});
+
+const getGuestsErrorMessage = () =>`Выбор ${numberRooms.value} ${numberRooms.value === '1' ? 'комнаты' : 'комнат'} для ${numberGuests.value.toLowerCase()} ${numberGuests.value === '1' ? 'гостя' : 'гостей'} невозможен.`;
+
+pristine.addValidator(numberGuests, checkCapacity, getGuestsErrorMessage);
+
+// Валидация поля «Цена за ночь»
+
+const typeOfHousing = adForm.querySelector('#type');
+const price = adForm.querySelector('#price');
+
+const minPrice = {
+  'bungalow': '0',
+  'flat': '1000',
+  'hotel': '3000',
+  'house': '5000',
+  'palace': '10000',
+};
+
+const validatePrice = () => price.value >= parseInt(minPrice[typeOfHousing.value], 10);
+
+const getPriceErrorMessage = () => `Для выбранного типа жилья минимальная цена за ночь ${minPrice[typeOfHousing.value]} руб.`;
+
+pristine.addValidator(price, validatePrice, getPriceErrorMessage);
+
+// // Валидация поля «Тип жилья»
+
+// const onTypeChange = () => {
+//   price.placeholder = minPrice[typeOfHousing.value];
+//   pristine.validate(price);
+// };
+
+// typeOfHousing.addEventListener('change', () => {
+//   onTypeChange();
+// });
+
+// // Валидация поля «Время заезда» и поля «Время выезда»
+
+// const timeIn = adForm.querySelector('#timein');
+// const timeOut = adForm.querySelector('#timeout');
+
+// const onTimeChange = (element, elementChecked) => {
+//   element.selectedIndex = elementChecked.selectedIndex;
+//   pristine.validate(elementChecked);
+// };
+
+// timeIn.addEventListener('change', () => {
+//   onTimeChange(timeOut, timeIn);
+// });
+
+// timeOut.addEventListener('change', () => {
+//   onTimeChange(timeIn, timeOut);
+// });
+
+adForm.addEventListener('submit', (evt) => {
+  if (!pristine.validate()) {evt.preventDefault();}
+});
+
+// adForm.addEventListener('submit', (evt) => {
+//   evt.preventDefault();
+//   pristine.validate();
+// });
