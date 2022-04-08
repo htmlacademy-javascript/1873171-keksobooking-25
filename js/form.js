@@ -67,34 +67,34 @@ const getPriceErrorMessage = () => `Для выбранного типа жил�
 
 pristine.addValidator(price, validatePrice, getPriceErrorMessage);
 
-// // Валидация поля «Тип жилья»
+// Валидация поля «Тип жилья»
 
-// const onTypeChange = () => {
-//   price.placeholder = minPrice[typeOfHousing.value];
-//   pristine.validate(price);
-// };
+const onTypeChange = () => {
+  price.placeholder = minPrice[typeOfHousing.value];
+  pristine.validate(price);
+};
 
-// typeOfHousing.addEventListener('change', () => {
-//   onTypeChange();
-// });
+typeOfHousing.addEventListener('change', () => {
+  onTypeChange();
+});
 
-// // Валидация поля «Время заезда» и поля «Время выезда»
+// Валидация поля «Время заезда» и поля «Время выезда»
 
-// const timeIn = adForm.querySelector('#timein');
-// const timeOut = adForm.querySelector('#timeout');
+const timeIn = adForm.querySelector('#timein');
+const timeOut = adForm.querySelector('#timeout');
 
-// const onTimeChange = (element, elementChecked) => {
-//   element.selectedIndex = elementChecked.selectedIndex;
-//   pristine.validate(elementChecked);
-// };
+const onTimeChange = (element, elementChecked) => {
+  element.selectedIndex = elementChecked.selectedIndex;
+  pristine.validate(elementChecked);
+};
 
-// timeIn.addEventListener('change', () => {
-//   onTimeChange(timeOut, timeIn);
-// });
+timeIn.addEventListener('change', () => {
+  onTimeChange(timeOut, timeIn);
+});
 
-// timeOut.addEventListener('change', () => {
-//   onTimeChange(timeIn, timeOut);
-// });
+timeOut.addEventListener('change', () => {
+  onTimeChange(timeIn, timeOut);
+});
 
 adForm.addEventListener('submit', (evt) => {
   if (!pristine.validate()) {evt.preventDefault();}
