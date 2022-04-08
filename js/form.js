@@ -17,13 +17,13 @@ const title = adForm.querySelector('#title');
 
 const checkTitle = (value) => value.length >= 30 && value.length <= 100;
 
-const getTitlekErrorMessage = (value) => {
+const getTitleErrorMessage = (value) => {
   if (value.length <= 30) {
     return `Минимальное количество символов 30. Длина поля сейчас ${value.length}.`;
   }
 };
 
-pristine.addValidator(title, checkTitle, getTitlekErrorMessage);
+pristine.addValidator(title, checkTitle, getTitleErrorMessage);
 
 // Валидация поля «Количество комнат» и поля «Количество мест»
 
@@ -63,9 +63,7 @@ const minPrice = {
 
 const validatePrice = () => price.value >= parseInt(minPrice[typeOfHousing.value], 10);
 
-function getPriceErrorMessage () {
-  return `Для выбранного типа жилья минимальная цена за ночь ${minPrice[typeOfHousing.value]} руб.`;
-}
+const getPriceErrorMessage = () => `Для выбранного типа жилья минимальная цена за ночь ${minPrice[typeOfHousing.value]} руб.`;
 
 pristine.addValidator(price, validatePrice, getPriceErrorMessage);
 
