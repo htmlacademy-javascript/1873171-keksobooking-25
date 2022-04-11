@@ -1,6 +1,3 @@
-import './form.js';
-import './map.js';
-
 const switchToInactiveState = () => {
   document.querySelector('.ad-form').classList.add('ad-form--disabled');
   document.querySelector('.ad-form-header').setAttribute('disabled', true);
@@ -16,8 +13,6 @@ const switchToInactiveState = () => {
     value.setAttribute('disabled', true);
   });
 };
-
-switchToInactiveState();
 
 const switchToActiveState = () => {
   document.querySelector('.ad-form').classList.remove('ad-form--disabled');
@@ -35,6 +30,4 @@ const switchToActiveState = () => {
   });
 };
 
-switchToActiveState();
-
-export {switchToActiveState};
+export {switchToActiveState, switchToInactiveState};

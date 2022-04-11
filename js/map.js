@@ -1,12 +1,13 @@
 import {createSimilarList, similarAds} from './similar-ad.js';
-import {} from './page-state.js';
+import {switchToInactiveState, switchToActiveState} from './page-state.js';
+
+switchToInactiveState();
 
 const address = document.querySelector('#address');
 
-
 const map = L.map('map-canvas')
   .on('load', () => {
-    // switchToActiveState();
+    switchToActiveState();
   })
   .setView({
     lat: 35.681729,

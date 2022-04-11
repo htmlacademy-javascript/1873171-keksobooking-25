@@ -1,5 +1,3 @@
-import './page-state.js';
-
 const adForm = document.querySelector('.ad-form');
 
 const pristine = new Pristine(adForm, {
@@ -10,10 +8,6 @@ const pristine = new Pristine(adForm, {
   errorTextTag: 'span',
   errorTextClass: 'ad-form__element--error'
 });
-
-// const validationError = document.querySelector('.ad-form__element--error');
-// validationError.style.fontSize = '12px';
-// validationError.style.color = '#ff6d51';
 
 // Валидация поля "Заголовок объявления"
 
