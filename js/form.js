@@ -1,4 +1,4 @@
-import './form-state.js';
+import './page-state.js';
 
 const adForm = document.querySelector('.ad-form');
 
@@ -10,6 +10,10 @@ const pristine = new Pristine(adForm, {
   errorTextTag: 'span',
   errorTextClass: 'ad-form__element--error'
 });
+
+// const validationError = document.querySelector('.ad-form__element--error');
+// validationError.style.fontSize = '12px';
+// validationError.style.color = '#ff6d51';
 
 // Валидация поля "Заголовок объявления"
 
@@ -66,6 +70,36 @@ const validatePrice = () => price.value >= parseInt(minPrice[typeOfHousing.value
 const getPriceErrorMessage = () => `Для выбранного типа жилья минимальная цена за ночь ${minPrice[typeOfHousing.value]} руб.`;
 
 pristine.addValidator(price, validatePrice, getPriceErrorMessage);
+
+// // Реализация слайдера
+
+const sliderElement = document.querySelector('.ad-form__slider');
+
+noUiSlider.create(sliderElement, {
+  range: {
+    min: 0,
+    max: 100000,
+  },
+  start: 0,
+  step: 100,
+  connect: 'lower',
+  format: {
+    to: function (value) {
+      return value.toFixed(0);
+    },
+    from: function (value) {
+      return Math.trunc(value);
+    },
+  },
+});
+
+sliderElement.noUiSlider.on('update', () => {
+  price.value = sliderElement.noUiSlider.get();
+});
+
+sliderElement.noUiSlider.on('change', () => {
+  pristine.validate(price);
+});
 
 // Валидация поля «Тип жилья»
 

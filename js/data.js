@@ -64,7 +64,7 @@ const createAd = function () {
     author: {avatar: `img/avatars/user${  getNumber()  }.png`},
     offer: {
       title: 'Милая, уютная квартирка в центре Токио',
-      address: `${latitude} , ${longtude}`,
+      address: `${latitude}, ${longtude}`,
       price: getRandomNumber(0, PRICE_MAX),
       type: getRandomArrayElement(TYPE_OF_HOUSING),
       rooms: getRandomArrayElement(ROOMS_QUANTITY),
@@ -72,7 +72,7 @@ const createAd = function () {
       checkin: getRandomArrayElement(CHECKIN_TIME),
       checkout: getRandomArrayElement(CHECKOUT_TIME),
       features: getRandomArray(FEATURES),
-      description: 'В распоряжении гостей апартаменты со стиральной машиной, телевизором с плоским экраном, гостиным уголком, полностью оборудованной кухней с микроволновой печью, холодильником, плитой и чайником.',
+      description: 'В распоряжении гостей апартаменты со стиральной машиной, телевизором, полностью оборудованной кухней.',
       photos: getRandomArray(PHOTOS),
     },
     location: {
