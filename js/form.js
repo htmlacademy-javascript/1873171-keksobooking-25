@@ -1,3 +1,7 @@
+import {switchToInactiveState} from './page-state.js';
+
+switchToInactiveState();
+
 const adForm = document.querySelector('.ad-form');
 
 const pristine = new Pristine(adForm, {
@@ -78,12 +82,8 @@ noUiSlider.create(sliderElement, {
   step: 100,
   connect: 'lower',
   format: {
-    to: function (value) {
-      return value.toFixed(0);
-    },
-    from: function (value) {
-      return Math.trunc(value);
-    },
+    to: (value) => value.toFixed(0),
+    from: (value) =>  Math.trunc(value),
   },
 });
 

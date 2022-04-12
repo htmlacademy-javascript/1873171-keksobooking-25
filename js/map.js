@@ -1,7 +1,5 @@
 import {createSimilarList, similarAds} from './similar-ad.js';
-import {switchToInactiveState, switchToActiveState} from './page-state.js';
-
-switchToInactiveState();
+import {switchToActiveState} from './page-state.js';
 
 const address = document.querySelector('#address');
 
@@ -52,10 +50,6 @@ const icon = L.icon({
   iconAnchor: [20, 40],
 });
 
-// Слой с маркерами
-
-// const markerGroup = L.layerGroup().addTo(map);
-
 const createMarker = (ad) => {
   const {location: {lat}, location: {lng}} = ad;
   const marker = L.marker(
@@ -77,8 +71,4 @@ const createMarker = (ad) => {
 similarAds.forEach((ad) => {
   createMarker(ad);
 });
-
-// Очистить слой
-
-// markerGroup.clearLayers();
 
