@@ -8,19 +8,14 @@ const TYPE_OF_HOUSING_KEY = {
   'hotel': 'Отель',
 };
 
-// const similarListTemplate = document.querySelector('.map__canvas');
-// const similarAdTemplate = document.querySelector('#card').content.querySelector('.popup');
 const similarAds = createAds(10);
 
-
 const createSimilarList = (ad) => {
-  // // const similarListTemplate = document.querySelector('.map__canvas');
   const similarAdTemplate = document.querySelector('#card').content.querySelector('.popup');
   const similarListFragment = document.createDocumentFragment();
   const adElement = similarAdTemplate.cloneNode(true);
 
   similarAds.forEach(() => {
-    // const adElement = similarAdTemplate.cloneNode(true);
     adElement.querySelector('.popup__title').textContent = ad.offer.title;
     adElement.querySelector('.popup__text--address').textContent = ad.offer.address;
     adElement.querySelector('.popup__text--price').textContent = `${ad.offer.price } ₽/ночь`;
