@@ -1,15 +1,22 @@
-import {createSimilarList, similarAds} from './similar-ad.js';
 import {switchToActiveState} from './page-state.js';
+import {createSimilarList} from './similar-ad.js';
 
 const address = document.querySelector('#address');
+const latitude = 35.681729;
+const longtude = 139.753927;
+
+const getStartСoordinates = () => {
+  address.value = `${latitude}, ${longtude}`;
+};
 
 const map = L.map('map-canvas')
   .on('load', () => {
     switchToActiveState();
+    getStartСoordinates();
   })
   .setView({
-    lat: 35.681729,
-    lng: 139.753927,
+    lat: latitude,
+    lng: longtude,
   }, 12);
 
 L.tileLayer(
@@ -27,8 +34,8 @@ const mainPinIcon = L.icon({
 
 const mainPinMarker = L.marker(
   {
-    lat: 35.68172,
-    lng: 139.75392,
+    lat: latitude,
+    lng: longtude,
   },
   {
     draggable: true,
@@ -38,10 +45,15 @@ const mainPinMarker = L.marker(
 
 mainPinMarker.addTo(map);
 
-address.value = `${mainPinMarker.getLatLng()}`;
+const getStartMainPinMarker = () => {
+  mainPinMarker.setLatLng({
+    lat: latitude,
+    lng: longtude,
+  });
+};
 
 mainPinMarker.on('moveend', (evt) => {
-  address.value = `${evt.target.getLatLng()}`;
+  address.value = `${evt.target.getLatLng()['lat'].toFixed(5)}, ${evt.target.getLatLng()['lng'].toFixed(5)}`;
 });
 
 const icon = L.icon({
@@ -50,8 +62,10 @@ const icon = L.icon({
   iconAnchor: [20, 40],
 });
 
+const markerGroup = L.layerGroup().addTo(map);
+
 const createMarker = (ad) => {
-  const {location: {lat}, location: {lng}} = ad;
+  const {lat, lng} = ad.location;
   const marker = L.marker(
     {
       lat,
@@ -59,16 +73,16 @@ const createMarker = (ad) => {
     },
     {
       icon,
-      toGeoJSON: 5,
     },
   );
 
-  marker.addTo(map).bindPopup(createSimilarList(ad));
-
-  return marker;
+  marker.addTo(markerGroup).bindPopup(createSimilarList(ad));
 };
 
-similarAds.forEach((ad) => {
-  createMarker(ad);
-});
+const createMarkers = (similarAds) => {
+  similarAds.forEach((ad) => {
+    createMarker(ad);
+  });
+};
 
+export {createMarkers, getStartСoordinates, getStartMainPinMarker};

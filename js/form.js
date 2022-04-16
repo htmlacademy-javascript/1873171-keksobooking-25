@@ -1,134 +1,94 @@
-import {switchToInactiveState} from './page-state.js';
+import {pristine, adForm, sliderElement} from './form-validation.js';
+import {isEscapeKey} from './util.js';
+import {getStartСoordinates, getStartMainPinMarker} from './map.js';
+import {sendData} from './api.js';
 
-switchToInactiveState();
+// if (window.localStorage) {
+//   const elements = document.querySelectorAll('[name]');
 
-const adForm = document.querySelector('.ad-form');
+//   for (let i = 0, length = elements.length; i < length; i++) {
+//     ((element) => {
+//       const name = element.getAttribute('name');
 
-const pristine = new Pristine(adForm, {
-  classTo: 'ad-form__element',
-  errorClass: 'ad-form__element--invalid',
-  successClass: 'ad-form__element--valid',
-  errorTextParent: 'ad-form__element',
-  errorTextTag: 'span',
-  errorTextClass: 'ad-form__element--error'
-});
+//       element.value = localStorage.getItem(name) || '';
 
-// Валидация поля "Заголовок объявления"
+//       element.onkeyup = function() {
+//         localStorage.setItem(name, element.value);
+//       };
+//     })(elements[i]);
+//   }
+// }
 
-const title = adForm.querySelector('#title');
+// Сообщение после отправки формы
 
-const checkTitle = (value) => value.length >= 30 && value.length <= 100;
+const showMessage = (message) => {
+  const containerMessage = document.querySelector(`#${message}`).content.querySelector(`.${message}`);
+  document.body.append(containerMessage);
 
-const getTitleErrorMessage = (value) => {
-  if (value.length <= 30) {
-    return `Минимальное количество символов 30. Длина поля сейчас ${value.length}.`;
-  }
+  document.addEventListener('click', () => {
+    containerMessage.classList.add('visually-hidden');
+  });
+
+  document.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      containerMessage.classList.add('visually-hidden');
+    }
+  });
 };
 
-pristine.addValidator(title, checkTitle, getTitleErrorMessage);
+// Возврат страницы в исходное состояние
 
-// Валидация поля «Количество комнат» и поля «Количество мест»
+const resetButton = document.querySelector('.ad-form__reset');
 
-const numberRooms = adForm.querySelector('#room_number');
-const numberGuests = adForm.querySelector('#capacity');
-
-const maxCapacity = {
-  '1': ['1'],
-  '2': ['1', '2'],
-  '3': ['1', '2', '3'],
-  '100': ['0']
+const returnOriginalState = () => {
+  adForm.reset();
+  sliderElement.noUiSlider.updateOptions({
+    start: 0,
+  });
+  getStartСoordinates();
+  getStartMainPinMarker();
 };
 
-const checkCapacity = () => maxCapacity[numberRooms.value].includes(numberGuests.value);
-
-numberRooms.addEventListener('input', () => {
-  checkCapacity();
-  pristine.validate(numberGuests);
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  returnOriginalState();
 });
 
-const getGuestsErrorMessage = () =>`Выбор ${numberRooms.value} ${numberRooms.value === '1' ? 'комнаты' : 'комнат'} для ${numberGuests.value.toLowerCase()} ${numberGuests.value === '1' ? 'гостя' : 'гостей'} невозможен.`;
+// Блокировка/разблокировка кнопки 'отправить'
 
-pristine.addValidator(numberGuests, checkCapacity, getGuestsErrorMessage);
+const submitButton = document.querySelector('.ad-form__submit');
 
-// Валидация поля «Цена за ночь»
-
-const typeOfHousing = adForm.querySelector('#type');
-const price = adForm.querySelector('#price');
-
-const minPrice = {
-  'bungalow': '0',
-  'flat': '1000',
-  'hotel': '3000',
-  'house': '5000',
-  'palace': '10000',
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
 };
 
-const validatePrice = () => price.value >= parseInt(minPrice[typeOfHousing.value], 10);
-
-const getPriceErrorMessage = () => `Для выбранного типа жилья минимальная цена за ночь ${minPrice[typeOfHousing.value]} руб.`;
-
-pristine.addValidator(price, validatePrice, getPriceErrorMessage);
-
-// // Реализация слайдера
-
-const sliderElement = document.querySelector('.ad-form__slider');
-
-noUiSlider.create(sliderElement, {
-  range: {
-    min: 0,
-    max: 100000,
-  },
-  start: 0,
-  step: 100,
-  connect: 'lower',
-  format: {
-    to: (value) => value.toFixed(0),
-    from: (value) =>  Math.trunc(value),
-  },
-});
-
-sliderElement.noUiSlider.on('update', () => {
-  price.value = sliderElement.noUiSlider.get();
-});
-
-sliderElement.noUiSlider.on('change', () => {
-  pristine.validate(price);
-});
-
-// Валидация поля «Тип жилья»
-
-const onTypeChange = () => {
-  price.placeholder = minPrice[typeOfHousing.value];
-  pristine.validate(price);
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
 };
 
-typeOfHousing.addEventListener('change', () => {
-  onTypeChange();
-});
 
-// Валидация поля «Время заезда» и поля «Время выезда»
+const setUserFormSubmit = () => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
 
-const timeIn = adForm.querySelector('#timein');
-const timeOut = adForm.querySelector('#timeout');
-
-const onTimeChange = (element, elementChecked) => {
-  element.selectedIndex = elementChecked.selectedIndex;
-  pristine.validate(elementChecked);
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          unblockSubmitButton();
+          showMessage('success');
+          returnOriginalState();
+        },
+        () => {
+          unblockSubmitButton();
+          showMessage('error');
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
 };
 
-timeIn.addEventListener('change', () => {
-  onTimeChange(timeOut, timeIn);
-});
-
-timeOut.addEventListener('change', () => {
-  onTimeChange(timeIn, timeOut);
-});
-
-adForm.addEventListener('submit', (evt) => {
-  if (!pristine.validate()) {evt.preventDefault();}
-});
-
-// adForm.addEventListener('submit', (evt) => {
-//   evt.preventDefault();
-//   pristine.validate();
-// });
+export {setUserFormSubmit};

@@ -56,4 +56,6 @@ const getRandomArray = (element) => {
   return RECEIVED_ELEMENTS;
 };
 
-export {getRandomNumber, getRandomFractionalNumber, getRandomArrayElement, getValue, getRandomArray};
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export {getRandomNumber, getRandomFractionalNumber, getRandomArrayElement, getValue, getRandomArray, isEscapeKey};
