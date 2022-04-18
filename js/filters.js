@@ -2,75 +2,75 @@ import {createMarker, markerGroup} from './map.js';
 
 const SIMILAR_AD_COUNT = 10;
 
+const filtersMap = document.querySelector('.map__filters');
 const typeHousingInput = document.querySelector('[name="housing-type"]');
-const housingPriceInput = document.querySelector('[name="housing-price"]');
-const housingRoomsInput = document.querySelector('[name="housing-rooms"]');
-const housingGuestInput = document.querySelector('[name="housing-guests"]');
-const housingFeatures = document.querySelector('#housing-features');
+const priceHousingInput = document.querySelector('[name="housing-price"]');
+const roomsHousingInput = document.querySelector('[name="housing-rooms"]');
+const guestHousingInput = document.querySelector('[name="housing-guests"]');
+const featuresHousing = document.querySelector('#housing-features');
 
 
 const filterType = (type) => type === typeHousingInput.value || typeHousingInput.value === 'any';
 
 const filterPrice = (price) => {
-  if (housingPriceInput.value === 'low') {
+  if (priceHousingInput.value === 'low') {
     return price < 10000;
   }
-  if (housingPriceInput.value === 'middle') {
+  if (priceHousingInput.value === 'middle') {
     return price >= 10000 && price < 50000;
   }
-  if (housingPriceInput.value === 'high') {
+  if (priceHousingInput.value === 'high') {
     return price >= 50000;
   }
   return true;
 };
 
-const filterRooms = (rooms) => `${rooms}` === housingRoomsInput.value || housingRoomsInput.value === 'any';
+const filterRooms = (rooms) => `${rooms}` === roomsHousingInput.value || roomsHousingInput.value === 'any';
 
-const filterGuests = (guests) => `${guests}` === housingGuestInput.value || housingGuestInput.value === 'any';
+const filterGuests = (guests) => `${guests}` === guestHousingInput.value || guestHousingInput.value === 'any';
 
 const selectedFeatures = new Set();
 
 const filterFeatures = (features) => {
-  if (!features) {return false;
-  } else {
-    if (selectedFeatures.size === 0) {
-      return true;
-    } else {
-      const selectedFeaturesArr = Array.from(selectedFeatures);
-      if (!(selectedFeaturesArr.every((feature) => features.includes(feature)))) {
-        return false;
-      }
-      return true;
-    }
+  if (selectedFeatures.size > 0 && !features) {
+    return false;
   }
+  if (selectedFeatures.size === 0) {
+    return true;
+  }
+  const selectedFeaturesArr = Array.from(selectedFeatures);
+  if (!(selectedFeaturesArr.every((feature) => features.includes(feature)))) {
+    return false;
+  }
+  return true;
 };
 
-const setEvent = (cd) => {
+
+const setFiltersChange = (callback) => {
   typeHousingInput.addEventListener('change', () => {
-    cd();
+    callback();
   });
-  housingPriceInput.addEventListener('change', () => {
-    cd();
+  priceHousingInput.addEventListener('change', () => {
+    callback();
   });
-  housingRoomsInput.addEventListener('change', () => {
-    cd();
+  roomsHousingInput.addEventListener('change', () => {
+    callback();
   });
-  housingGuestInput.addEventListener('change', () => {
-    cd();
+  guestHousingInput.addEventListener('change', () => {
+    callback();
   });
-  housingFeatures.addEventListener('change', (evt) => {
+  featuresHousing.addEventListener('change', (evt) => {
     const featuresChecked = evt.target;
     if (featuresChecked.checked === true) {
       selectedFeatures.add(featuresChecked.value);
     } else {
       selectedFeatures.delete(featuresChecked.value);
     }
-    cd();
+    callback();
   });
 };
 
-const createMarkers = (similarAds) => {
-  markerGroup.clearLayers();
+const filterAds = (similarAds) =>
   similarAds
     .filter((ad) => filterType(ad.offer.type)
     && filterPrice(ad.offer.price)
@@ -78,10 +78,18 @@ const createMarkers = (similarAds) => {
     && filterGuests(ad.offer.guests)
     && filterFeatures(ad.offer.features)
     )
-    .slice(0, SIMILAR_AD_COUNT)
-    .forEach((ad) => {
-      createMarker(ad);
-    });
+    .slice(0, SIMILAR_AD_COUNT);
+
+const createMarkers = (ads) => {
+  markerGroup.clearLayers();
+  filterAds(ads).forEach((ad) => {
+    createMarker(ad);
+  });
 };
 
-export {createMarkers, setEvent};
+
+const resetFilters = () => {
+  filtersMap.reset();
+};
+
+export {setFiltersChange, createMarkers, resetFilters};

@@ -79,4 +79,14 @@ const createMarker = (ad) => {
   marker.addTo(markerGroup).bindPopup(createSimilarList(ad));
 };
 
-export {createMarker, markerGroup, getStartСoordinates, getStartMainPinMarker};
+const resetMap = () => {
+  map.setView({
+    lat: latitude,
+    lng: longtude,
+  }, 12);
+  getStartСoordinates();
+  getStartMainPinMarker();
+  map.closePopup();
+};
+
+export {createMarker, markerGroup, resetMap};

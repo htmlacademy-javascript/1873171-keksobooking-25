@@ -1,9 +1,9 @@
 import {showAlert} from './util.js';
 
-const url = 'https://25.javascript.pages.academy/keksobooking';
+const URL_API = 'https://25.javascript.pages.academy/keksobooking';
 
 const getData = (onSuccess) => {
-  fetch(`${url}/data`)
+  fetch(`${URL_API}/data`)
     .then((response) => response.json())
     .then((ads) => {
       onSuccess(ads);
@@ -16,7 +16,7 @@ const getData = (onSuccess) => {
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(
-    url,
+    URL_API,
     {
       method: 'POST',
       body,
