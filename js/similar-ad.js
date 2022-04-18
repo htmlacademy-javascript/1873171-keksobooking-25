@@ -1,3 +1,5 @@
+import './filters.js';
+
 const TYPE_OF_HOUSING_KEY = {
   'palace': 'Дворец',
   'flat': 'Квартира',

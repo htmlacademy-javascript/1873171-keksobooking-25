@@ -1,23 +1,8 @@
-import {pristine, adForm, sliderElement} from './form-validation.js';
+import {pristine, adForm, resetForm, resetSlider} from './form-validation.js';
 import {isEscapeKey} from './util.js';
 import {getStartСoordinates, getStartMainPinMarker} from './map.js';
 import {sendData} from './api.js';
-
-// if (window.localStorage) {
-//   const elements = document.querySelectorAll('[name]');
-
-//   for (let i = 0, length = elements.length; i < length; i++) {
-//     ((element) => {
-//       const name = element.getAttribute('name');
-
-//       element.value = localStorage.getItem(name) || '';
-
-//       element.onkeyup = function() {
-//         localStorage.setItem(name, element.value);
-//       };
-//     })(elements[i]);
-//   }
-// }
+import {previewImageReset} from './images.js';
 
 // Сообщение после отправки формы
 
@@ -42,12 +27,11 @@ const showMessage = (message) => {
 const resetButton = document.querySelector('.ad-form__reset');
 
 const returnOriginalState = () => {
-  adForm.reset();
-  sliderElement.noUiSlider.updateOptions({
-    start: 0,
-  });
+  resetForm();
+  resetSlider();
   getStartСoordinates();
   getStartMainPinMarker();
+  previewImageReset();
 };
 
 resetButton.addEventListener('click', (evt) => {
