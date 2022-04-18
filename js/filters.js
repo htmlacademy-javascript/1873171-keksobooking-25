@@ -31,14 +31,17 @@ const filterGuests = (guests) => `${guests}` === housingGuestInput.value || hous
 const selectedFeatures = new Set();
 
 const filterFeatures = (features) => {
-  if (selectedFeatures.size === 0 || !features) {
-    return true;
+  if (!features) {return false;
   } else {
-    const selectedFeaturesArr = Array.from(selectedFeatures);
-    if (!(selectedFeaturesArr.every((feature) => features.includes(feature)))) {
-      return false;
+    if (selectedFeatures.size === 0) {
+      return true;
+    } else {
+      const selectedFeaturesArr = Array.from(selectedFeatures);
+      if (!(selectedFeaturesArr.every((feature) => features.includes(feature)))) {
+        return false;
+      }
+      return true;
     }
-    return true;
   }
 };
 
