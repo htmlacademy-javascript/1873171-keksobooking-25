@@ -79,10 +79,4 @@ const createMarker = (ad) => {
   marker.addTo(markerGroup).bindPopup(createSimilarList(ad));
 };
 
-const createMarkers = (similarAds) => {
-  similarAds.forEach((ad) => {
-    createMarker(ad);
-  });
-};
-
-export {createMarkers, getStartСoordinates, getStartMainPinMarker};
+export {createMarker, markerGroup, getStartСoordinates, getStartMainPinMarker};

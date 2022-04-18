@@ -1,13 +1,16 @@
 import './page-state.js';
 import {setUserFormSubmit} from './form.js';
 import './similar-ad.js';
-import {createMarkers} from './map.js';
+import {debounce} from './util.js';
 import {getData} from './api.js';
+import {createMarkers, setEvent} from './filters.js';
 
-const CREATE_MARKERS_COUNT = 10;
+const RERENDER_DELAY = 500;
 
 getData((ads) => {
-  createMarkers(ads.slice(0, CREATE_MARKERS_COUNT));
+  createMarkers(ads);
+  setEvent(debounce(
+    () => createMarkers(ads), RERENDER_DELAY));
 });
 
 setUserFormSubmit();

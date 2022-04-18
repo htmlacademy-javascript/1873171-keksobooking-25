@@ -95,6 +95,12 @@ sliderElement.noUiSlider.on('change', () => {
   pristine.validate(price);
 });
 
+const resetSlider = () => {
+  sliderElement.noUiSlider.updateOptions({
+    start: 0,
+  });
+};
+
 // Валидация поля «Тип жилья»
 
 const onTypeChange = () => {
@@ -124,4 +130,10 @@ timeOut.addEventListener('change', () => {
   onTimeChange(timeIn, timeOut);
 });
 
-export {pristine, adForm, sliderElement};
+const resetForm = () => {
+  adForm.reset();
+  onTypeChange();
+  pristine.reset();
+};
+
+export {pristine, adForm, resetForm, resetSlider};
