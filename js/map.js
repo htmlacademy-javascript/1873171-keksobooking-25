@@ -79,7 +79,6 @@ const createMarker = (ad) => {
   marker.addTo(markerGroup).bindPopup(createSimilarList(ad));
 };
 
-
 const resetMap = () => {
   map.setView({
     lat: latitude,

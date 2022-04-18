@@ -70,7 +70,7 @@ const setFiltersChange = (callback) => {
   });
 };
 
-const filterAds = (similarAds) => {
+const filterAds = (similarAds) =>
   similarAds
     .filter((ad) => filterType(ad.offer.type)
     && filterPrice(ad.offer.price)
@@ -79,12 +79,11 @@ const filterAds = (similarAds) => {
     && filterFeatures(ad.offer.features)
     )
     .slice(0, SIMILAR_AD_COUNT);
-};
 
-const createMarkers = () => {
+const createMarkers = (ads) => {
   markerGroup.clearLayers();
-  filterAds.forEach((filterAd) => {
-    createMarker(filterAd);
+  filterAds(ads).forEach((ad) => {
+    createMarker(ad);
   });
 };
 

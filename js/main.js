@@ -1,8 +1,8 @@
 import './page-state.js';
+import {debounce} from './util.js';
 import {setUserFormSubmit} from './form.js';
 import './map.js';
 import './similar-ad.js';
-import {debounce} from './util.js';
 import {createMarkers, setFiltersChange} from './filters.js';
 import {getData} from './api.js';
 
