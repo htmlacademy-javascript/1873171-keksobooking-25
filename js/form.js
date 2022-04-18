@@ -1,8 +1,10 @@
 import {pristine, adForm, resetForm, resetSlider} from './form-validation.js';
 import {isEscapeKey} from './util.js';
-import {getStartСoordinates, getStartMainPinMarker} from './map.js';
 import {sendData} from './api.js';
+import {resetMap, createMarkers} from './map.js';
+import {resetFilters} from './filters.js';
 import {previewImageReset} from './images.js';
+
 
 // Сообщение после отправки формы
 
@@ -29,14 +31,15 @@ const resetButton = document.querySelector('.ad-form__reset');
 const returnOriginalState = () => {
   resetForm();
   resetSlider();
-  getStartСoordinates();
-  getStartMainPinMarker();
+  resetMap();
+  resetFilters();
   previewImageReset();
 };
 
 resetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   returnOriginalState();
+  createMarkers();
 });
 
 // Блокировка/разблокировка кнопки 'отправить'
