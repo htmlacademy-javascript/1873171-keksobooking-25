@@ -1,61 +1,100 @@
-import {pristine, adForm, resetForm, resetSlider} from './form-validation.js';
+import {pristine, adFormContainer, resetForm, resetSlider} from './form-validation.js';
 import {isEscapeKey} from './util.js';
 import {sendData} from './api.js';
 import {resetMap} from './map.js';
 import {resetFilters} from './filters.js';
-import {previewImageReset} from './images.js';
+import {resetPreviewImage} from './images.js';
+import {getFilteredData} from './main.js';
+
+const resetButtonContainer = document.querySelector('.ad-form__reset');
+const submitButtonContainer = document.querySelector('.ad-form__submit');
+const succcessMessageContainer = document.querySelector('#success').content.querySelector('.success');
+const errorMessageContainer = document.querySelector('#error').content.querySelector('.error');
+
+// Сообщения после отправки формы
 
 
-// Сообщение после отправки формы
+const onMessageEscKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeShowMessage();
+  }
+};
 
-const showMessage = (message) => {
-  const containerMessage = document.querySelector(`#${message}`).content.querySelector(`.${message}`);
-  document.body.append(containerMessage);
+const onMessageClick = () => {
+  closeShowMessage();
+};
 
-  document.addEventListener('click', () => {
-    containerMessage.classList.add('visually-hidden');
-  });
+const showMessage = () => {
+  document.body.append(succcessMessageContainer);
 
-  document.addEventListener('keydown', (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.preventDefault();
-      containerMessage.classList.add('visually-hidden');
-    }
-  });
+  document.addEventListener('keydown', onMessageEscKeydown);
+  document.addEventListener('click', onMessageClick);
+
+};
+
+function closeShowMessage () {
+  succcessMessageContainer.remove();
+
+  document.removeEventListener('keydown', onMessageEscKeydown);
+  document.removeEventListener('click', onMessageClick);
+}
+
+const onErrorMessageEscKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeErrorShowMessage();
+  }
+};
+
+const onErrorMessageClick = () => {
+  closeErrorShowMessage();
+};
+
+const showErrorMessage = () => {
+  document.body.append(errorMessageContainer);
+
+  document.addEventListener('keydown', onErrorMessageEscKeydown);
+  document.addEventListener('click', onErrorMessageClick);
+
+};
+
+function closeErrorShowMessage () {
+  errorMessageContainer.remove();
+
+  document.removeEventListener('keydown', onErrorMessageEscKeydown);
+  document.removeEventListener('click', onErrorMessageClick);
+}
+
+
+// Блокировка/разблокировка кнопки 'отправить'
+
+const blockSubmitButton = () => {
+  submitButtonContainer.disabled = true;
+};
+
+const unblockSubmitButton = () => {
+  submitButtonContainer.disabled = false;
 };
 
 // Возврат страницы в исходное состояние
-
-const resetButton = document.querySelector('.ad-form__reset');
 
 const returnOriginalState = () => {
   resetForm();
   resetSlider();
   resetMap();
+  getFilteredData();
   resetFilters();
-  previewImageReset();
+  resetPreviewImage();
 };
 
-resetButton.addEventListener('click', (evt) => {
+resetButtonContainer.addEventListener('click', (evt) => {
   evt.preventDefault();
   returnOriginalState();
 });
 
-// Блокировка/разблокировка кнопки 'отправить'
-
-const submitButton = document.querySelector('.ad-form__submit');
-
-const blockSubmitButton = () => {
-  submitButton.disabled = true;
-};
-
-const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-};
-
-
 const setUserFormSubmit = () => {
-  adForm.addEventListener('submit', (evt) => {
+  adFormContainer.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     const isValid = pristine.validate();
@@ -64,12 +103,12 @@ const setUserFormSubmit = () => {
       sendData(
         () => {
           unblockSubmitButton();
-          showMessage('success');
+          showMessage();
           returnOriginalState();
         },
         () => {
           unblockSubmitButton();
-          showMessage('error');
+          showErrorMessage();
         },
         new FormData(evt.target),
       );

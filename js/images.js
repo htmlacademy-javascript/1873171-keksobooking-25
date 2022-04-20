@@ -1,17 +1,17 @@
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-const fileChooserAvatar = document.querySelector('.ad-form-header__input');
+const fileChooserAvatarContainer = document.querySelector('.ad-form-header__input');
 const previewAvatar = document.querySelector('.ad-form-header__preview').querySelector('img');
-const fileChooserPhotos = document.querySelector('.ad-form__input');
+const fileChooserPhotosContainer = document.querySelector('.ad-form__input');
 const previewPhotosContainer = document.querySelector('.ad-form__photo');
 
 // Загрузка и предпросмотр аватарки.
 
 document.querySelector('.ad-form-header__preview').style.justifyContent = 'center';
 
-fileChooserAvatar.addEventListener('change', () => {
+fileChooserAvatarContainer.addEventListener('change', () => {
 
-  const file = fileChooserAvatar.files[0];
+  const file = fileChooserAvatarContainer.files[0];
   const fileName = file.name.toLowerCase();
 
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
@@ -26,9 +26,9 @@ fileChooserAvatar.addEventListener('change', () => {
 
 // Загрузка и предпросмотр фотографии жилья.
 
-fileChooserPhotos.addEventListener('change', () => {
+fileChooserPhotosContainer.addEventListener('change', () => {
 
-  const file = fileChooserPhotos.files[0];
+  const file = fileChooserPhotosContainer.files[0];
   const fileName = file.name.toLowerCase();
 
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
@@ -47,7 +47,7 @@ fileChooserPhotos.addEventListener('change', () => {
 
 // Сброс фото
 
-const previewImageReset = () => {
+const resetPreviewImage = () => {
   previewAvatar.style.width = '40px';
   previewAvatar.style.height = '44px';
   previewAvatar.src = 'img/muffin-grey.svg';
@@ -55,4 +55,4 @@ const previewImageReset = () => {
   previewPhotosContainer.innerHTML = '';
 };
 
-export {previewImageReset};
+export {resetPreviewImage};

@@ -1,33 +1,34 @@
 import {createMarker, markerGroup} from './map.js';
 
 const SIMILAR_AD_COUNT = 10;
+const PRICE_LOW = 10000;
+const PRICE_HIGH = 50000;
 
-const filtersMap = document.querySelector('.map__filters');
-const typeHousingInput = document.querySelector('[name="housing-type"]');
-const priceHousingInput = document.querySelector('[name="housing-price"]');
-const roomsHousingInput = document.querySelector('[name="housing-rooms"]');
-const guestHousingInput = document.querySelector('[name="housing-guests"]');
-const featuresHousing = document.querySelector('#housing-features');
+const filtersMapContainer = document.querySelector('.map__filters');
+const typeHousingInputContainer = document.querySelector('[name="housing-type"]');
+const priceHousingInputContainer = document.querySelector('[name="housing-price"]');
+const roomsHousingInputContainer = document.querySelector('[name="housing-rooms"]');
+const guestHousingInputContainer = document.querySelector('[name="housing-guests"]');
+const featuresHousingContainer = document.querySelector('#housing-features');
 
-
-const filterType = (type) => type === typeHousingInput.value || typeHousingInput.value === 'any';
+const filterType = (type) => type === typeHousingInputContainer.value || typeHousingInputContainer.value === 'any';
 
 const filterPrice = (price) => {
-  if (priceHousingInput.value === 'low') {
-    return price < 10000;
+  if (priceHousingInputContainer.value === 'low') {
+    return price < PRICE_LOW;
   }
-  if (priceHousingInput.value === 'middle') {
-    return price >= 10000 && price < 50000;
+  if (priceHousingInputContainer.value === 'middle') {
+    return price >= PRICE_LOW && price < PRICE_HIGH;
   }
-  if (priceHousingInput.value === 'high') {
-    return price >= 50000;
+  if (priceHousingInputContainer.value === 'high') {
+    return price >= PRICE_HIGH;
   }
   return true;
 };
 
-const filterRooms = (rooms) => `${rooms}` === roomsHousingInput.value || roomsHousingInput.value === 'any';
+const filterRooms = (rooms) => `${rooms}` === roomsHousingInputContainer.value || roomsHousingInputContainer.value === 'any';
 
-const filterGuests = (guests) => `${guests}` === guestHousingInput.value || guestHousingInput.value === 'any';
+const filterGuests = (guests) => `${guests}` === guestHousingInputContainer.value || guestHousingInputContainer.value === 'any';
 
 const selectedFeatures = new Set();
 
@@ -39,29 +40,25 @@ const filterFeatures = (features) => {
     return true;
   }
   const selectedFeaturesArr = Array.from(selectedFeatures);
-  if (!(selectedFeaturesArr.every((feature) => features.includes(feature)))) {
-    return false;
-  }
-  return true;
+  return selectedFeaturesArr.every((feature) => features.includes(feature));
 };
 
-
 const setFiltersChange = (callback) => {
-  typeHousingInput.addEventListener('change', () => {
+  typeHousingInputContainer.addEventListener('change', () => {
     callback();
   });
-  priceHousingInput.addEventListener('change', () => {
+  priceHousingInputContainer.addEventListener('change', () => {
     callback();
   });
-  roomsHousingInput.addEventListener('change', () => {
+  roomsHousingInputContainer.addEventListener('change', () => {
     callback();
   });
-  guestHousingInput.addEventListener('change', () => {
+  guestHousingInputContainer.addEventListener('change', () => {
     callback();
   });
-  featuresHousing.addEventListener('change', (evt) => {
+  featuresHousingContainer.addEventListener('change', (evt) => {
     const featuresChecked = evt.target;
-    if (featuresChecked.checked === true) {
+    if (featuresChecked.checked) {
       selectedFeatures.add(featuresChecked.value);
     } else {
       selectedFeatures.delete(featuresChecked.value);
@@ -87,9 +84,8 @@ const createMarkers = (ads) => {
   });
 };
 
-
 const resetFilters = () => {
-  filtersMap.reset();
+  filtersMapContainer.reset();
 };
 
 export {setFiltersChange, createMarkers, resetFilters};
