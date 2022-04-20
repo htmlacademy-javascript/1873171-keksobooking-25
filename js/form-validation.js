@@ -1,10 +1,18 @@
-import {switchToInactiveState} from './page-state.js';
+const TITLE_LENGTH_MIN = 30;
+const TITLE_LENGTH_MAX = 100;
+const PRICE_MAX = 100000;
 
-switchToInactiveState();
+const adFormContainer = document.querySelector('.ad-form');
+const sliderContainer = document.querySelector('.ad-form__slider');
+const titleContainer = adFormContainer.querySelector('#title');
+const numberRoomsContainer = adFormContainer.querySelector('#room_number');
+const numberGuestsContainer = adFormContainer.querySelector('#capacity');
+const typeOfHousingContainer = adFormContainer.querySelector('#type');
+const priceContainer = adFormContainer.querySelector('#price');
+const timeInContainer = adFormContainer.querySelector('#timein');
+const timeOutContainer = adFormContainer.querySelector('#timeout');
 
-const adForm = document.querySelector('.ad-form');
-
-const pristine = new Pristine(adForm, {
+const pristine = new Pristine(adFormContainer, {
   classTo: 'ad-form__element',
   errorClass: 'ad-form__element--invalid',
   successClass: 'ad-form__element--valid',
@@ -15,22 +23,17 @@ const pristine = new Pristine(adForm, {
 
 // Валидация поля "Заголовок объявления"
 
-const title = adForm.querySelector('#title');
-
-const checkTitle = (value) => value.length >= 30 && value.length <= 100;
+const checkTitle = (value) => value.length >= TITLE_LENGTH_MIN && value.length <= TITLE_LENGTH_MAX;
 
 const getTitleErrorMessage = (value) => {
-  if (value.length <= 30) {
+  if (value.length <= TITLE_LENGTH_MIN) {
     return `Минимальное количество символов 30. Длина поля сейчас ${value.length}.`;
   }
 };
 
-pristine.addValidator(title, checkTitle, getTitleErrorMessage);
+pristine.addValidator(titleContainer, checkTitle, getTitleErrorMessage);
 
 // Валидация поля «Количество комнат» и поля «Количество мест»
-
-const numberRooms = adForm.querySelector('#room_number');
-const numberGuests = adForm.querySelector('#capacity');
 
 const maxCapacity = {
   '1': ['1'],
@@ -39,21 +42,18 @@ const maxCapacity = {
   '100': ['0']
 };
 
-const checkCapacity = () => maxCapacity[numberRooms.value].includes(numberGuests.value);
+const checkCapacity = () => maxCapacity[numberRoomsContainer.value].includes(numberGuestsContainer.value);
 
-numberRooms.addEventListener('input', () => {
+numberRoomsContainer.addEventListener('input', () => {
   checkCapacity();
-  pristine.validate(numberGuests);
+  pristine.validate(numberGuestsContainer);
 });
 
-const getGuestsErrorMessage = () =>`Выбор ${numberRooms.value} ${numberRooms.value === '1' ? 'комнаты' : 'комнат'} для ${numberGuests.value.toLowerCase()} ${numberGuests.value === '1' ? 'гостя' : 'гостей'} невозможен.`;
+const getGuestsErrorMessage = () =>`Выбор ${numberRoomsContainer.value} ${numberRoomsContainer.value === '1' ? 'комнаты' : 'комнат'} для ${numberGuestsContainer.value.toLowerCase()} ${numberGuestsContainer.value === '1' ? 'гостя' : 'гостей'} невозможен.`;
 
-pristine.addValidator(numberGuests, checkCapacity, getGuestsErrorMessage);
+pristine.addValidator(numberGuestsContainer, checkCapacity, getGuestsErrorMessage);
 
 // Валидация поля «Цена за ночь»
-
-const typeOfHousing = adForm.querySelector('#type');
-const price = adForm.querySelector('#price');
 
 const minPrice = {
   'bungalow': '0',
@@ -63,20 +63,18 @@ const minPrice = {
   'palace': '10000',
 };
 
-const validatePrice = () => price.value >= parseInt(minPrice[typeOfHousing.value], 10);
+const validatePrice = () => priceContainer.value >= parseInt(minPrice[typeOfHousingContainer.value], 10);
 
-const getPriceErrorMessage = () => `Для выбранного типа жилья минимальная цена за ночь ${minPrice[typeOfHousing.value]} руб.`;
+const getPriceErrorMessage = () => `Для выбранного типа жилья минимальная цена за ночь ${minPrice[typeOfHousingContainer.value]} руб.`;
 
-pristine.addValidator(price, validatePrice, getPriceErrorMessage);
+pristine.addValidator(priceContainer, validatePrice, getPriceErrorMessage);
 
 // // Реализация слайдера
 
-const sliderElement = document.querySelector('.ad-form__slider');
-
-noUiSlider.create(sliderElement, {
+noUiSlider.create(sliderContainer, {
   range: {
     min: 0,
-    max: 100000,
+    max: PRICE_MAX,
   },
   start: 0,
   step: 100,
@@ -87,16 +85,16 @@ noUiSlider.create(sliderElement, {
   },
 });
 
-sliderElement.noUiSlider.on('update', () => {
-  price.value = sliderElement.noUiSlider.get();
+sliderContainer.noUiSlider.on('update', () => {
+  priceContainer.value = sliderContainer.noUiSlider.get();
 });
 
-sliderElement.noUiSlider.on('change', () => {
-  pristine.validate(price);
+sliderContainer.noUiSlider.on('change', () => {
+  pristine.validate(priceContainer);
 });
 
 const resetSlider = () => {
-  sliderElement.noUiSlider.updateOptions({
+  sliderContainer.noUiSlider.updateOptions({
     start: 0,
   });
 };
@@ -104,36 +102,33 @@ const resetSlider = () => {
 // Валидация поля «Тип жилья»
 
 const onTypeChange = () => {
-  price.placeholder = minPrice[typeOfHousing.value];
-  pristine.validate(price);
+  priceContainer.placeholder = minPrice[typeOfHousingContainer.value];
+  pristine.validate(priceContainer);
 };
 
-typeOfHousing.addEventListener('change', () => {
+typeOfHousingContainer.addEventListener('change', () => {
   onTypeChange();
 });
 
 // Валидация поля «Время заезда» и поля «Время выезда»
-
-const timeIn = adForm.querySelector('#timein');
-const timeOut = adForm.querySelector('#timeout');
 
 const onTimeChange = (element, elementChecked) => {
   element.selectedIndex = elementChecked.selectedIndex;
   pristine.validate(elementChecked);
 };
 
-timeIn.addEventListener('change', () => {
-  onTimeChange(timeOut, timeIn);
+timeInContainer.addEventListener('change', () => {
+  onTimeChange(timeOutContainer, timeInContainer);
 });
 
-timeOut.addEventListener('change', () => {
-  onTimeChange(timeIn, timeOut);
+timeOutContainer.addEventListener('change', () => {
+  onTimeChange(timeInContainer, timeOutContainer);
 });
 
 const resetForm = () => {
-  adForm.reset();
+  adFormContainer.reset();
   onTypeChange();
   pristine.reset();
 };
 
-export {pristine, adForm, resetForm, resetSlider};
+export {pristine, adFormContainer, resetForm, resetSlider};

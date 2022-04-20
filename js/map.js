@@ -1,12 +1,14 @@
-import {switchToActiveState} from './page-state.js';
+import {switchToActiveState, switchToInactiveState} from './page-state.js';
 import {createSimilarList} from './similar-ad.js';
 
-const address = document.querySelector('#address');
+const addressContainer = document.querySelector('#address');
 const latitude = 35.681729;
 const longtude = 139.753927;
 
+switchToInactiveState();
+
 const getStartСoordinates = () => {
-  address.value = `${latitude}, ${longtude}`;
+  addressContainer.value = `${latitude}, ${longtude}`;
 };
 
 const map = L.map('map-canvas')
@@ -53,7 +55,7 @@ const getStartMainPinMarker = () => {
 };
 
 mainPinMarker.on('moveend', (evt) => {
-  address.value = `${evt.target.getLatLng()['lat'].toFixed(5)}, ${evt.target.getLatLng()['lng'].toFixed(5)}`;
+  addressContainer.value = `${evt.target.getLatLng()['lat'].toFixed(5)}, ${evt.target.getLatLng()['lng'].toFixed(5)}`;
 });
 
 const icon = L.icon({
